@@ -12,8 +12,8 @@ class yolo_tf:
 
     weights_file = 'weights/YOLO_small.ckpt'
     alpha = 0.1
-    threshold = 0.3
-    iou_threshold = 0.5
+    threshold = 0.2
+    iou_threshold = 0.4
 
     result_list = None
     classes =  ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair",
@@ -179,6 +179,13 @@ def draw_results(img, image_lane, yolo, fps, lane_info):
         y = int(results[i][2])
         w = int(results[i][3])//2
         h = int(results[i][4])//2
+        if  (w > 300) and (h > 150):
+            continue
+        if ((x<350)or(x>850))and(w > 70)and(h>30):
+            cv2.rectangle(img_cp, (x - w, y - h), (x + w, y + h), (0, 0, 255), 4)
+            cv2.rectangle(img_cp, (x - w, y - h - 20), (x + w, y - h), (125, 125, 125), -1)
+            cv2.putText(img_cp, 'OVERTAKE', (x - w + 5, y - h - 7), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1)
+            continue
         cv2.rectangle(img_cp,(x-w,y-h),(x+w,y+h),(0,0,255),4)
         cv2.rectangle(img_cp,(x-w,y-h-20),(x+w,y-h),(125,125,125),-1)
         # cv2.putText(img_cp,results[i][0] + ' : %.2f' % results[i][5],(x-w+5,y-h-7),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,255,0),1)
@@ -187,13 +194,13 @@ def draw_results(img, image_lane, yolo, fps, lane_info):
             window_list.append(((x-w,y-h),(x+w,y+h)))
 
     # draw vehicle thumbnails
-    draw_thumbnails(img_cp, img, window_list)
+    #draw_thumbnails(img_cp, img, window_list)
 
     # draw speed
     # draw_speed(img_cp, fps, yolo.w_img)
 
     # draw lane status
-    draw_lane_status(img_cp,lane_info)
+    #draw_lane_status(img_cp,lane_info)
 
     return img_cp
 
@@ -216,6 +223,7 @@ def vehicle_detection_yolo(image, image_lane, lane_info):
     # compute frame per second
     fps = 1.0 / (timer() - start)
     # draw visualization on frame
+    print('drawing viz')
     yolo_result = draw_results(image, image_lane, yolo, fps, lane_info)
 
     return yolo_result

@@ -5,8 +5,9 @@ from lane import *
 
 
 def pipeline_yolo(img):
-
+    print('I GOT HERE \n\n\n')
     img_undist, img_lane_augmented, lane_info = lane_process(img)
+
     output = vehicle_detection_yolo(img_undist, img_lane_augmented, lane_info)
 
     return output
@@ -24,7 +25,7 @@ if __name__ == "__main__":
     demo = 1  # 1:image (YOLO and SVM), 2: video (YOLO Pipeline), 3: video (SVM pipeline)
 
     if demo == 1:
-        filename = 'examples/test4.jpg'
+        filename = 'examples/racestart1.jpg'
         image = mpimg.imread(filename)
 
         #(1) Yolo pipeline
@@ -42,8 +43,9 @@ if __name__ == "__main__":
 
     elif demo == 2:
         # YOLO Pipeline
-        video_output = 'examples/project_YOLO.mp4'
-        clip1 = VideoFileClip("examples/project_video.mp4").subclip(30,32)
+        video_output = 'examples/trialovertakeonvet.mp4'
+        clip1 = VideoFileClip("examples/overtakes.mp4").subclip(57, 60)
+       # clip1 = VideoFileClip("examples/project_video.mp4")
         clip = clip1.fl_image(pipeline_yolo)
         clip.write_videofile(video_output, audio=False)
 

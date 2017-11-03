@@ -477,6 +477,8 @@ def create_output_frame(offcenter, pts, undist_ori, fps, curvature, curve_direct
 
     newwarp_ = cv2.resize(newwarp,None, fx=input_scale/output_frame_scale, fy=input_scale/output_frame_scale, interpolation = cv2.INTER_LINEAR)
 
+    #newwarp_ = newwarp_[:, range(1, 1279), :]
+    print('shapes of images to add: {}, {}'.format(undist_ori.shape, newwarp_.shape))
     output = cv2.addWeighted(undist_ori, 1, newwarp_, 0.3, 0)
 
     ############## generate the combined output frame only for visualization purpose ################
@@ -583,6 +585,7 @@ def lane_process(img, visualization=False):
     # find the binary image of lane/edges
     img_binary = find_edges(img_undist)
 
+    print('Undistorted image')
     # warp the image to bird view
     binary_warped = warper(img_binary, M)  # get binary image contains edges
 
@@ -613,6 +616,7 @@ def lane_process(img, visualization=False):
 
     # combine all images into final video output (only for visualization purpose)
     _, single_view, lane_info = create_output_frame(offcenter, pts, img_undist_, fps, curvature, curve_direction, binary_sub)
+    print('DID WE GET HERE OR WHAT?')
     return img_undist_, single_view, lane_info
 
 
